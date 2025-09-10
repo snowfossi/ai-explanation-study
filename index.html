@@ -1764,10 +1764,12 @@ function completeStudy() {
       "entry.813672496": document.getElementById("all-responses").value,   // all_responses
       "entry.181686841": document.getElementById("completion-time").value // completion_time
     })
+  }).finally(() => {
+    // 4. Delay redirect slightly so the fetch has time to flush
+    setTimeout(() => {
+      window.location.href = "https://app.prolific.com/submissions/complete?cc=C17WH9PO";
+    }, 500); // ~0.5s is usually enough
   });
-
-  // Redirect to Prolific completion page
-  window.location.href = "https://app.prolific.com/submissions/complete?cc=C17WH9PO";
 }
 
 // =======================
