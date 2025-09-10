@@ -1751,6 +1751,21 @@ function completeStudy() {
   responses.timestamps.completion = new Date().toISOString();
   responses.totalTime = new Date() - startTime;
   
+  // 2. Fill hidden fields (optional, but keeps everything consistent)
+  document.getElementById("all-responses").value = JSON.stringify(responses);
+  document.getElementById("completion-time").value = responses.timestamps.completion;
+
+  // 3. Send to Google Form (replace YOUR IDs!)
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSeaQieEdl5OKryE5TIUP7UqhKUfZT998EZImh4-Pkng-Slc3g/formResponse", {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      "entry.813672496": document.getElementById("all-responses").value,   // all_responses
+      "entry.181686841": document.getElementById("completion-time").value // completion_time
+    })
+  });
+
   // Redirect to Prolific completion page
   window.location.href = "https://app.prolific.com/submissions/complete?cc=C17WH9PO";
 }
