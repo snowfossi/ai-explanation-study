@@ -1786,8 +1786,11 @@ function completeStudy() {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
   responses.timestamps.start = new Date().toISOString();
+  responses.prolific_id = getProlificId();
+  responses.timestamps.prolific_id = new Date().toISOString();
   loadAllImages();
   // Start with consent form (it's already visible by default)
   console.log('Experiment initialized - starting with consent form');
+  console.log('Prolific ID captured:', responses.prolific_id);
 });
 </script>
