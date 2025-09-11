@@ -1069,6 +1069,7 @@
 </div>
 
 <form style="display:none;">
+  <input type="hidden" name="prolific_id" id="prolific-id-hidden">
   <input type="hidden" name="all_responses" id="all-responses">
   <input type="hidden" name="completion_time" id="completion-time">
   <input type="hidden" name="participant_id" id="participant-id">
@@ -1390,6 +1391,12 @@ let responses = {
   catchTrials: {},
   timestamps: {}
 };
+
+// Auto-capture Prolific ID
+function getProlificId() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('PROLIFIC_PID') || 'direct_access';
+}
 
 let currentSession = 1;
 let practiceScore = 0;
@@ -1754,6 +1761,7 @@ function completeStudy() {
   // 2. Fill hidden fields (optional, but keeps everything consistent)
   document.getElementById("all-responses").value = JSON.stringify(responses);
   document.getElementById("completion-time").value = responses.timestamps.completion;
+  document.getElementById("prolific-id-hidden").value = responses.prolific_id;
 
   // 3. Send to Google Form (replace YOUR IDs!)
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSeaQieEdl5OKryE5TIUP7UqhKUfZT998EZImh4-Pkng-Slc3g/formResponse", {
@@ -1762,7 +1770,8 @@ function completeStudy() {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       "entry.813672496": document.getElementById("all-responses").value,   // all_responses
-      "entry.181686841": document.getElementById("completion-time").value // completion_time
+      "entry.181686841": document.getElementById("completion-time").value, // completion_time
+      "entry.904244051": responses.prolific_id // prolific_id (replace xxxxxx with actual field ID)
     })
   }).finally(() => {
     // 4. Delay redirect slightly so the fetch has time to flush
@@ -1779,8 +1788,11 @@ function completeStudy() {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
   responses.timestamps.start = new Date().toISOString();
+  responses.prolific_id = getProlificId();
+  responses.timestamps.prolific_id = new Date().toISOString();
   loadAllImages();
   // Start with consent form (it's already visible by default)
   console.log('Experiment initialized - starting with consent form');
+  console.log('Prolific ID captured:', responses.prolific_id);
 });
 </script>
